@@ -1,0 +1,24 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>合成页面操作 Fixture</title>
+<style>
+body{margin:0;font:16px sans-serif}#list{height:280px;overflow-y:auto;border:1px solid #888}.geek-card{height:150px;border-bottom:1px solid #aaa;padding:12px;box-sizing:border-box}.resume-dialog{position:fixed;inset:10px 20px;background:white;border:2px solid teal;padding:16px;z-index:3}.resume-body{height:240px;overflow-y:auto;border:1px solid #aaa}.resume-body p{height:180px}button{padding:10px}
+</style>
+<div id="list"></div><div id="dialogs"></div>
+<script>
+// 全部数据均为合成；这个文件不会进入发布包。
+window.fixture={sent:0,opened:[],closed:0,scrolls:0,resumeScrolls:0,lost:false,wrong:false,delay:0};
+let loaded=0;const list=document.querySelector('#list');
+function append(){for(let i=0;i<2&&loaded<6;i++){
+ const id='synthetic-'+(++loaded);const card=document.createElement('article');card.className='geek-card';card.dataset.geekId=id;
+ card.innerHTML='<button class="name">合成人选</button><p>工作经历：运营项目，增长分析</p>';
+ card.querySelector('.name').onclick=()=>{window.fixture.opened.push(id);setTimeout(()=>openResume(id),window.fixture.delay);};list.append(card);
+}if(loaded===6&&!document.querySelector('.no-more')){const end=document.createElement('div');end.className='no-more';end.textContent='没有更多';list.append(end);}}
+append();list.onscroll=()=>{window.fixture.scrolls++;if(list.scrollTop+list.clientHeight>=list.scrollHeight-5)append();};
+function openResume(id){
+ const root=document.createElement('div');root.className='resume-dialog';root.dataset.geekId=window.fixture.wrong?'wrong-person':id;
+ root.innerHTML='<button class="close">关闭</button><h2>合成简历</h2><div class="resume-body">'+Array.from({length:5},(_,i)=>'<p>项目经历 '+i+'：合成运营项目</p>').join('')+'</div><button class="btn-greet">打招呼</button>';
+ root.querySelector('.close').onclick=()=>{window.fixture.closed++;root.remove();};
+ root.querySelector('.resume-body').onscroll=()=>window.fixture.resumeScrolls++;
+ root.querySelector('.btn-greet').onclick=()=>{window.fixture.sent++;if(!window.fixture.lost)setTimeout(()=>{root.querySelector('.btn-greet').textContent='继续沟通';},80);};
+ document.querySelector('#dialogs').replaceChildren(root);
+}
+</script></html>

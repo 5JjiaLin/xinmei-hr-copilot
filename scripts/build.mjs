@@ -12,9 +12,12 @@ const options = {
   entryPoints: {
     background: 'src/entries/background/index.ts',
     sidepanel: 'src/ui/sidepanel.ts',
-    mock: 'src/adapters/mock/fixture.ts'
+    mock: 'src/adapters/mock/fixture.ts',
+    'boss-content': 'src/adapters/boss/content.ts'
   },
-  outdir: 'dist', bundle: true, format: 'esm', target: 'chrome116', sourcemap: true
+  outdir: 'dist', bundle: true, format: 'esm', target: 'chrome116', sourcemap: true,
+  // 保持依赖路径相对项目，避免本地软链接目录泄露到发布脚本和 source map。
+  preserveSymlinks: true
 };
 if (process.argv.includes('--watch')) {
   const ctx = await context(options);

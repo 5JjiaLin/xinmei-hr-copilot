@@ -1,9 +1,9 @@
 {
   "name": "xinmei-hr-copilot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "新美九天 AI HR Copilot · 仅 MOCK 的首个垂直切片",
+  "description": "新美九天 AI HR Copilot · BOSS 页面操作层与合成筛选演示",
   "scripts": {
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs --watch",

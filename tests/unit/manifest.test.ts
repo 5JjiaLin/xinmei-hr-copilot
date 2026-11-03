@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 const root = path.resolve('.');
-test('MOCK manifest 不申请网站访问、debugger 或真实接入权限', () => {
+test('网站权限仅按需申请 BOSS；不申请 debugger 或所有网站', () => {
   const manifest = JSON.parse(readFileSync(path.join(root, 'manifest.json'), 'utf8'));
   assert.equal(manifest.manifest_version, 3);
-  assert.deepEqual(manifest.permissions, ['sidePanel', 'storage']);
+  assert.deepEqual(manifest.permissions, ['sidePanel', 'storage', 'scripting']);
   assert.equal(manifest.host_permissions, undefined);
-  assert.equal(manifest.optional_host_permissions, undefined);
+  assert.deepEqual(manifest.optional_host_permissions, ['https://www.zhipin.com/*']);
   assert.equal(manifest.content_scripts, undefined);
   assert.match(manifest.content_security_policy.extension_pages, /connect-src 'none'/);
 });

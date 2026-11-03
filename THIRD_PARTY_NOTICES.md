@@ -10,7 +10,15 @@
   `src/storage/repository.ts`。改造包括招聘任务结构、revision CAS、发送账本原子提交。
 - 未引入求职简历编辑、PDF.js、学习路线、BOSS Content Script、远程 AI 请求及 API Key 存储逻辑。
 - 上游没有单独 NOTICE。原库 vendored PDF.js 为 Apache-2.0，本项目未复制和打包该组件。
-- 其他计划中的参考仓库本次未下载、未复制代码；未引入 GPL 代码。
+- 首个 MOCK 切片未复制其他计划工程；未引入 GPL 代码。
+
+## 1xiaoyueryuer/boss-hr-agent-toolkit（v0.2 行为参考）
+
+- 来源：https://github.com/1xiaoyueryuer/boss-hr-agent-toolkit
+- 审查版本：`22626327006c667dfcdd6d7707298068721cff02`，MIT，Copyright (c) 2026 yuyu。
+- 只阅读候选卡片 DOM 属性、链接参数和原生招呼按钮的线索；本项目独立实现 DOM 适配器。
+- 未复制源码、安装脚本、API 调用、姓名兜底、随机拟人行为、评分规则或登录数据。
+- 参考实现不能证明当前 BOSS 页面与本适配器兼容，需真实页面单独验证。
 
 ## npm 依赖
 

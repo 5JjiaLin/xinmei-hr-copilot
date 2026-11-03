@@ -1,5 +1,6 @@
 import type { Run, Operation } from '../shared/types';
 import { defaultJd } from '../adapters/mock/data';
+import type { BossRun, BossProbe } from '../adapters/boss/protocol';
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const jd = $<HTMLTextAreaElement>('jd');
 const errors: Record<string, string> = {
@@ -74,3 +75,60 @@ async function refresh() {
 }
 void refresh();
 setInterval(() => { void refresh(); }, 700);
+
+const bossErrors: Record<string, string> = {
+  OPEN_BOSS_RECOMMEND: '请在当前标签页打开 BOSS 招聘端的推荐牛人。',
+  HOST_PERMISSION_REQUIRED: '尚未授予 BOSS 网站访问权限。',
+  ACCOUNT_ID_UNAVAILABLE: '页面没有提供可核验的账号 ID，需要适配此页面结构。',
+  JOB_ID_UNAVAILABLE: '页面没有提供可核验的当前岗位 ID，需要适配此页面结构。',
+  CANDIDATE_ID_UNAVAILABLE: '候选人卡片缺少稳定 ID，需要适配此页面结构。',
+  LIST_NOT_FOUND: '未识别推荐列表。请等待加载，确认当前位于推荐牛人。',
+  MULTIPLE_LISTS: '发现多个候选列表，无法唯一确定操作目标。',
+  RESUME_ID_MISMATCH: '简历身份无法与列表核对，操作已暂停。',
+  SEND_UNKNOWN: '打招呼结果未知，已停止后续动作且不会重发。请在页面核对，之后停止本批。',
+  LIST_STALLED: '滚动后没有发现新候选人，尚未确认列表结束。请检查页面后继续。',
+  TARGET_TAB_INACTIVE: '请将绑定的 BOSS 标签页切到前台后继续。',
+  PAGE_NOT_VISIBLE: 'BOSS 页面不可见，请回到绑定页面后继续。',
+  MANUAL_INTERVENTION: '检测到你在 BOSS 页面操作，已暂停并让出控制。',
+  IDENTITY_CHANGED: '岗位、账号或页面结构已变化，已取消旧动作。',
+  WORKER_RESTARTED: '扩展后台已重启，任务暂停。请核对页面后继续。',
+  PAGE_DISCONNECTED: '原页面文档已断开。请停止本批，再连接当前页面。',
+  RISK_BLOCKED: '页面出现验证、额度或风险提示，操作已暂停。',
+  BATCH_FINISHED: '本批已完成', LIST_FINISHED: '列表已结束', READY: '页面已识别',
+  BATCH_INVALID: '本批人数必须是 1–20 的整数。',
+};
+const bossReason = (code: string) => bossErrors[code] ?? errors[code] ?? code;
+async function refreshBoss() {
+  const run = await request('BOSS_STATUS') as BossRun | undefined;
+  $('boss-status').textContent = run ? `${phases[run.status]} · 已浏览 ${run.read} · 已打招呼 ${run.sent} · 已联系跳过 ${run.skipped} · 列表滚动 ${run.listScrolls} 次 · ${bossReason(run.reason)}` : '尚未开始';
+  $('boss-logs').textContent = run?.events.map(e => `${e.at.slice(11, 19)} ${bossReason(e.reason)}`).join('\n') ?? '';
+  $<HTMLButtonElement>('boss-start').disabled = !!run && !['STOPPED', 'COMPLETED'].includes(run.status);
+  $<HTMLButtonElement>('boss-pause').disabled = run?.status !== 'RUNNING';
+  $<HTMLButtonElement>('boss-resume').disabled = run?.status !== 'PAUSED' || run.phase === 'SENDING';
+  $<HTMLButtonElement>('boss-stop').disabled = !run || ['STOPPED', 'COMPLETED'].includes(run.status);
+}
+async function bossAct(type: string, payload: Record<string, unknown> = {}) {
+  try { const data = await request(type, payload); $('boss-error').textContent = ''; await refreshBoss(); return data; }
+  catch (error) { $('boss-error').textContent = bossReason(error instanceof Error ? error.message : 'PAGE_DISCONNECTED'); }
+}
+$('boss-connect').onclick = async () => {
+  try {
+    // 浏览器要求权限请求直接发生在用户点击事件中。
+    if (!await chrome.permissions.request({ origins: ['https://www.zhipin.com/*'] })) throw new Error('HOST_PERMISSION_REQUIRED');
+    const connection = await bossAct('BOSS_CONNECT') as { probe: BossProbe } | undefined;
+    if (connection) $('boss-diagnostic').textContent = `${bossReason(connection.probe.reason)}；识别卡片 ${connection.probe.cards}，稳定 ID ${connection.probe.identified}。`;
+  } catch (error) { $('boss-error').textContent = bossReason(error instanceof Error ? error.message : 'PAGE_DISCONNECTED'); }
+};
+$('boss-mode').onchange = () => {
+  const sending = $<HTMLSelectElement>('boss-mode').value === 'GREET_ALL';
+  $('boss-mode-note').textContent = sending ? '点击开始后，会对本批每位打开的候选人打招呼，不判断是否匹配 JD；已联系者跳过。' : '先验证列表与简历滚动、打开和返回；详细筛选规则尚未接入。';
+  $('boss-start').textContent = sending ? '开始浏览并逐一打招呼' : '开始页面操作';
+};
+$('boss-start').onclick = () => { void bossAct('BOSS_START', { mode: $<HTMLSelectElement>('boss-mode').value, limit: Number($<HTMLInputElement>('boss-limit').value) }); };
+for (const command of ['pause', 'resume', 'stop', 'clear']) $('boss-' + command).onclick = () => { void bossAct('BOSS_' + command.toUpperCase()); };
+let bossRefreshing = false;
+setInterval(() => {
+  if (bossRefreshing) return; bossRefreshing = true;
+  void refreshBoss().catch(() => {}).finally(() => { bossRefreshing = false; });
+}, 1000);
+void refreshBoss().catch(() => {});

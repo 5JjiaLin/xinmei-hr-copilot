@@ -1,10 +1,20 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI HR Copilot</title><link rel="stylesheet" href="styles.css"></head>
-<body class="panel"><header><span class="badge">仅 MOCK</span><h1>AI HR Copilot</h1><p>新美九天 · 招聘任务中心</p></header>
-<main><section><button id="open-fixture">打开模拟招聘页</button><p class="muted">只使用合成候选人，不连接 BOSS 或外部 AI。</p>
+<body class="panel"><header><span class="badge">页面操作版</span><h1>AI HR Copilot</h1><p>新美九天 · 招聘任务中心</p></header>
+<main><section aria-label="BOSS 页面操作"><h2>BOSS 页面操作</h2>
+<p>在当前浏览器打开 BOSS 推荐牛人，人工选好岗位，然后连接页面。</p>
+<button id="boss-connect">连接当前 BOSS 页面</button><p id="boss-diagnostic" class="muted">首次连接会请求该网站的访问权限。</p>
+<label for="boss-mode">本次操作</label><select id="boss-mode"><option value="BROWSE">只浏览简历，不打招呼</option><option value="GREET_ALL">浏览并逐一打招呼（不筛选）</option></select>
+<p id="boss-mode-note" class="muted">先验证列表与简历滚动、打开和返回；详细筛选规则尚未接入。</p>
+<label for="boss-limit">本批最多浏览人数（1–20）</label><input id="boss-limit" type="number" min="1" max="20" value="3">
+<button id="boss-start" class="primary">开始页面操作</button>
+<div class="actions"><button id="boss-pause">暂停操作</button><button id="boss-resume">继续操作</button><button id="boss-stop">停止操作</button></div>
+<p id="boss-status" aria-live="polite">尚未开始</p><p id="boss-error" role="alert"></p>
+<details><summary>页面操作记录</summary><pre id="boss-logs"></pre><button id="boss-clear">删除操作任务（保留防重复记录）</button></details>
+</section><section><h2>合成筛选演示</h2><button id="open-fixture">打开模拟招聘页</button><p class="muted">以下 JD 和假模型只用于合成演示，不用于上方真实页面操作。</p>
 <h2 id="job-name">请在模拟页选择岗位</h2><p id="snapshot" class="muted"></p>
 <label for="jd">岗位 JD（演示版每行一个能力短语）</label><textarea id="jd" rows="4" maxlength="4000"></textarea>
-<button class="primary" id="start">开始执行</button><button disabled title="未实现真实适配器，未配置平台及公司授权">真实发送不可用</button></section>
+<button class="primary" id="start">开始执行</button></section>
 <section aria-live="polite"><h2 id="status">尚未开始</h2><p id="reason"></p><p id="metrics"></p>
 <div class="actions"><button id="pause">暂停</button><button id="resume">继续</button><button id="stop">停止</button><button id="reconcile">核对未知回执</button></div><p id="error" role="alert"></p></section>
 <section><h2>候选人进度与回复</h2><ul id="candidates"></ul></section>
