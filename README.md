@@ -8,13 +8,14 @@
 需要 Node.js 24 / npm（本机验证：Node 24.14.1、npm 11.11.0）。
 
 ```bash
-cd /Users/jjia/Desktop/HR
+git clone https://github.com/5JjiaLin/xinmei-hr-copilot.git
+cd xinmei-hr-copilot
 npm ci --ignore-scripts
 npm run build
 ```
 
 1. 在 Edge 打开 `edge://extensions`，开启「开发人员模式」。
-2. 点击「加载解压缩的扩展」，选择 `/Users/jjia/Desktop/HR/dist`。
+2. 点击「加载解压缩的扩展」，选择刚克隆的项目文件夹中的 `dist` 子文件夹。
 3. 点击扩展图标打开侧栏，点击「打开模拟招聘页」。只开一个模拟页。
 4. 在模拟页手选岗位；侧栏默认 JD 为两行：`海外社媒运营`、`增长项目`。
 5. 点击「开始执行」，看到扫描 10 人、读取/深筛 3 人、联系 2 人。
