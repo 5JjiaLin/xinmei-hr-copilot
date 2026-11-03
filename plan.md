@@ -3,8 +3,23 @@
 > 项目归属：新美九天  
 > 平台：Microsoft Edge（Chromium，Manifest V3）  
 > 产品形态：BOSS 招聘端辅助插件（Side Panel）  
-> 当前状态：方案定稿；真实 BOSS 页面接入和自动发送尚未验证/授权  
-> 执行规范：参照 `agent.md`
+> 当前状态：首个 MOCK 垂直切片已实现，Chromium 自动化验收通过；Edge 实机待验证；真实 BOSS 接入未授权/未开发
+> 执行规范：以 `AGENTS.md` 为 canonical；`agent.md` 为原始兼容文档
+
+### 执行记录 · 2026-11-03
+
+已读取项目原有三个文件 `AGENTS.md`、`agent.md`、`plan.md`。本轮只交付第 13 节要求的
+第一项 MOCK 垂直切片，不将 Phase 1–4 的生产级能力统称完成。
+
+- 已克隆并审查 Polaris MIT 版本 `c95108a2ccaf48da84d86c10ac6f154f2b4e6219`，上游测试 62/62 通过。
+- 已实现原生 MV3/Side Panel、严格 TS、IndexedDB CAS、岗位/账号锁、串行编排、发送账本、Mock 三类适配器。
+- 合成链路：10 人 → 3 份简历 → 2 次招呼 → 1 位回复 → HR 聊天交接；无逐候选人人工批准。
+- 类型检查与构建通过；单测 11/11、E2E 5/5；依赖审计 0 漏洞。
+- 四个切片反例均有测试：切岗、同名重排、回执丢失不重发、侧栏刷新/Worker 强制终止恢复。
+- 限制：本机没有 Edge，真实侧栏窗口人工验收未完成；未做全量 iframe/虚拟列表矩阵和 HR 标注评测。
+- 真实 BOSS、真实招呼、外部 LLM、Edge 商店发布均未开始。平台/公司/账号授权未提供，真实模式保持禁用。
+
+文件与运行步骤：`README.md`；完整实际结果：`docs/validation.md`；许可与授权记录：`docs/upstream-review.md`。
 
 ## 1. 项目背景与业务目标
 
@@ -359,12 +374,12 @@ selectedJobVerified
 
 ### Phase 0 — 可行性、许可与工程建立（阻断项）
 
-- [ ] 检查 Polaris 项目结构、许可证、测试、已有问题和依赖风险。
-- [ ] 确认 Edge MV3 能加载 Side Panel、后台 Worker、存储和动态主机权限。
-- [ ] 核对 BOSS 当前企业账号适用的平台协议，形成可审计的接入授权结论。
-- [ ] 识别 Edge 商店发布风险，确定内部测试/发布策略。
-- [ ] 设计 Browser Adapter、Greeting Adapter、Reply Adapter 的接口。
-- [ ] 编写 MOCK 数据和测试页面。
+- [x] 检查 Polaris 项目结构、许可证、测试、已有问题和依赖风险。
+- [ ] 确认 Edge MV3 能加载 Side Panel、后台 Worker、存储和动态主机权限。（Chromium 已通过；Edge 未安装；MOCK 不申请网站权限）
+- [ ] 核对 BOSS 当前企业账号适用的平台协议，形成可审计的接入授权结论。（协议未提供，真实接入禁止启用，见审查记录）
+- [x] 识别 Edge 商店发布风险，确定内部测试/发布策略。（仅本地侧载 MOCK，不发布）
+- [x] 设计 Browser Adapter、Greeting Adapter、Reply Adapter 的接口。
+- [x] 编写 MOCK 数据和测试页面。
 
 **交付：** 基础工程、架构说明、授权记录、可运行 Mock 插件。  
 **放行门槛：** MOCK 正常运行；真实接入的授权状态单独明确，不以“可读到页面”代替许可。
@@ -489,6 +504,9 @@ Mock 推荐牛人页 → 手动选岗位 → Side Panel 输入 JD → 开始
 4. 强制刷新/重启插件，任务从安全检查点恢复。
 
 这四项不过关，不进入真实页面操作阶段。
+
+本轮验收：上述流程与四项反例已在本地合成 Chromium 扩展测试中通过。
+Edge 实机尚未验证；真实页面操作仍受 Phase 0/5 授权门禁阻断，不因本节通过自动开放。
 
 ## 14. 每次迭代的交付格式
 

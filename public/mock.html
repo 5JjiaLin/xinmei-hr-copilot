@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>合成招聘页 · HR MOCK</title><link rel="stylesheet" href="styles.css"></head>
+<body class="fixture"><header><span class="badge">本地合成页面</span><h1>推荐候选人 · 模拟环境</h1><p>在此选岗位，然后点击扩展图标，在侧栏输入 JD 并开始。</p></header>
+<main><section><label for="job">当前岗位</label><select id="job"><option value="mock-growth">海外社媒运营</option><option value="mock-content">内容策划</option></select><p id="account"></p>
+<div class="actions"><button id="simulate-reply">模拟一位候选人回复</button><button id="simulate-hr">模拟 HR 消息</button><button id="reorder">重排同名候选人</button></div>
+<p>模拟招呼次数：<strong id="sent-count">0</strong>；候选人回复：<strong id="reply-count">0</strong></p>
+<details><summary>故障注入（仅合成环境）</summary><label><input type="checkbox" id="lost"> 模拟已发送但回执丢失</label><label><input type="checkbox" id="risk"> 模拟风险提示/额度阻断</label><label><input type="checkbox" id="hold-resume"> 暂缓详情加载（重启测试）</label><button id="release-resume">释放详情加载</button><button id="switch-account">切换合成账号</button></details></section>
+<section><h2>当前读取的完整简历</h2><p id="resume" hidden></p></section><div id="cards" class="cards"></div>
+<dialog id="chat"><h2>HR 手工接管</h2><p></p><form method="dialog"><button>关闭</button></form></dialog></main>
+<script type="module" src="mock.js"></script></body></html>

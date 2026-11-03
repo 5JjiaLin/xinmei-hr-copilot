@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "新美九天 AI HR Copilot · MOCK",
+  "description": "仅使用本地合成招聘数据的一键筛选与回复交接演示。不连接真实 BOSS。",
+  "version": "0.1.0",
+  "minimum_chrome_version": "116",
+  "permissions": ["sidePanel", "storage"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_title": "打开 HR 侧栏" },
+  "side_panel": { "default_path": "sidepanel.html" },
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'none'" }
+}

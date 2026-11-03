@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI HR Copilot</title><link rel="stylesheet" href="styles.css"></head>
+<body class="panel"><header><span class="badge">仅 MOCK</span><h1>AI HR Copilot</h1><p>新美九天 · 招聘任务中心</p></header>
+<main><section><button id="open-fixture">打开模拟招聘页</button><p class="muted">只使用合成候选人，不连接 BOSS 或外部 AI。</p>
+<h2 id="job-name">请在模拟页选择岗位</h2><p id="snapshot" class="muted"></p>
+<label for="jd">岗位 JD（演示版每行一个能力短语）</label><textarea id="jd" rows="4" maxlength="4000"></textarea>
+<button class="primary" id="start">开始执行</button><button disabled title="未实现真实适配器，未配置平台及公司授权">真实发送不可用</button></section>
+<section aria-live="polite"><h2 id="status">尚未开始</h2><p id="reason"></p><p id="metrics"></p>
+<div class="actions"><button id="pause">暂停</button><button id="resume">继续</button><button id="stop">停止</button><button id="reconcile">核对未知回执</button></div><p id="error" role="alert"></p></section>
+<section><h2>候选人进度与回复</h2><ul id="candidates"></ul></section>
+<details><summary>操作日志</summary><pre id="logs"></pre></details>
+<details><summary>本地数据管理</summary><p>任务与账本保存在本机。停止后可删除，模拟页的合成回执仍独立保留。</p><button id="clear">删除本地任务与账本</button></details></main>
+<script type="module" src="sidepanel.js"></script></body></html>
